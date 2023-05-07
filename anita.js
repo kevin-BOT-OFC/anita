@@ -87,6 +87,15 @@ const { TelegraPh } = require("./archivos/telegraPh.js")
  tmpdir
 } = require("os")
 
+// DATA E HORA //
+const moment = require("moment-timezone")
+const hora = moment.tz("America/Lima").format("HH:mm:ss")
+const datai = moment.tz("America/Lima").format("DD/MM/YY")
+const colom = moment().tz('America/Bogota').format('DD/MM HH:mm')
+
+
+
+
 // CONSTANTES SETTING //
 
 var prefix = '.' //prefijo
@@ -116,7 +125,7 @@ async function startJuls() {
 const { version, isLatest } = await fetchLatestBaileysVersion()
 console.log(`💤..Espera esta Conectando..!!`)
 console.log(banner.string)
-console.log("..anita Bot..\nListo Capo Conectado Exitosamente..")
+console.log(`\nListo Capo Conectado Exitosamente\n---------\n\nDia: ${datai}\n\nHora: ${hora}\n---------\nCreado Por Kevin\n\n`)
 const anita = WAConnection({
 logger: P({ level: "silent" }),
 printQRInTerminal: true,
@@ -156,28 +165,13 @@ anita.ev.on('group-participants.update', async (anu) => {
 
       const fotito = fs.readFileSync('./archivos/Bienvenida.jpg')
 
-      const kevin = `
-      ╭══════•>✾<•══════╮
-
-          ★¡Hola a todos!★
-      
-            ¡Bienvenidos! 
-      
-      ╰══════•>✾<•══════╯
-      
-      ━━━━━━━ ∙ʚ♡ɞ∙ ━━━━━━━
-      ━━━━━━━ ∙ʚ♡ɞ∙ ━━━━━━━
-
-╔══════❀・°・❀══════╗
-
-•Me presento soy anita la BOT de esta hermoso grupo , les doy una cálida bienvenida a todos, de parte de los Admins y de usuarios.
-
-TE SUGIERO LEER LAS REGLAS POR FAVOR 
+      const Bienvenida = `
+      ╭━〘𝓐𝓝𝓘𝓣𝓐-𝓑𝓞𝓣𝐎𝐓〙\n┃ ⛥╭──────────────\n๖ۣۜۜ͜͡𝐇𝐨𝐥𝐚ঔৣֳ᷌᷈͜͡ ${numerodep}\n💖 𝙱𝙸𝙴𝙽𝚅𝙴𝙽𝙸𝙳@\n┃ ⛥│🤴ᩭ✎𝙽Ú𝙼𝙴𝚁𝙾 𝙳𝙴 𝙼𝙸 𝙲𝚁𝙴𝙰𝙳𝙾𝚁\n┃ ⛥│📔ᩭ✎http://wa.me/573001382233\n┃ ⛥│📚ᩭ✎𝙴𝙽 𝙴𝚂𝚃𝙴 𝙶𝚁𝚄𝙿𝙾 𝙿𝚄𝙴𝙳𝙴𝚂 𝙴𝙽𝙲𝙾𝙽𝚃𝚁𝙰𝚁\n┃ ⛥│🍀ᩭ✎𝙰𝙼𝙸𝚂𝚃𝙰𝙳𝙴𝚂\n┃ ⛥│🤝ᩭ✎𝙰𝙼𝙸𝙶𝙾𝚂\n┃ ⛥│❤️📚ᩭ✎𝙳𝙴𝚂𝙼𝙰𝙳𝚁𝙴┃ ⛥│◦➛😇ᩭ✎𝙲𝙾𝚃𝙾𝚁𝚁𝙴𝙾 𝚈 𝙼Á𝚂\n┃ ⛥│⁉️ᩭ✎𝙰𝚅𝙸𝚂𝙾 𝙸𝙼𝙿𝙾𝚁𝚃𝙰𝙽𝚃𝙴:\n𝙿𝚘𝚛 𝚏𝚊𝚟𝚘𝚛 𝙻𝚎𝚎 𝚕𝚊𝚜 𝚛𝚎𝚐𝚕𝚊𝚜 𝚍𝚎𝚕 𝚐𝚛𝚞𝚙𝚘 𝚙𝚊𝚛𝚊 𝚚𝚞𝚎 𝚎𝚟𝚒𝚝𝚎𝚜 𝚜𝚎𝚛 𝚎𝚕𝚒𝚖𝚒𝚗𝚊𝚍𝚘 𝚢 𝚎𝚟𝚒𝚝𝚎𝚜 𝚝𝚎𝚗𝚎𝚛 𝚙𝚛𝚘𝚋𝚕𝚎𝚖𝚊𝚜 𝚌𝚘𝚗 𝚌𝚛𝚎𝚊𝚍𝚘𝚛 𝚍𝚎𝚕 𝚐𝚛𝚞o\n┃ ⛥│\n┃ ⛥│◦➛🌱OF-KEV𝐈\n┃ ⛥╰───────────\n╰━━━━━━━━━━━──⊷'
 
       ${numerodep}
 
       `
-      anita.sendMessage(anu.id,{image : fotito, caption : kevin})
+      anita.sendMessage(anu.id,{image : fotito, caption : Bienvenida})
      }
 
      if(anu.action == 'remove') {
@@ -186,14 +180,11 @@ TE SUGIERO LEER LAS REGLAS POR FAVOR
 
       const fotito2 = fs.readFileSync('./archivos/Despedida.jpg')
 
-      const kevin2 = `
+      const Despedida = `
      
-       ${numerodep}
-       Nunca digo adiós a nadie. Nunca dejo que las personas más cercanas a mí se vayan. Me las llevo conmigo donde yo vaya.
-     𝕊𝔸𝕃𝕀𝕆 𝔻𝔼𝕃 𝔾ℝ𝕌ℙ𝕆  
-    ℂ𝕌𝕀𝔻𝔸𝕋𝔼 𝔻𝕀𝕆𝕊 𝕋𝔼 𝔹𝔼ℕ𝔻𝕀𝔾𝔸
+       ╭━〘𝓐𝓝𝓘𝓣𝓐-𝓑𝓞𝓣𝐎𝐓〙\n┃ ⛥╭──────────────\n${numerodep}\n𝐒𝐚𝐥𝐢ó 𝐝𝐞𝐥 𝐠𝐫𝐮𝐩𝐨 𝐧𝐢 𝐦𝐨𝐝𝐨 𝐪𝐮𝐞 𝐭𝐞 𝐯𝐚𝐲𝐚 𝐛𝐢𝐞𝐧 𝐇𝐚𝐬𝐭𝐚 𝐥𝐚 𝐩𝐫ó𝐱𝐢𝐦𝐚 𝐪𝐮𝐞 𝐃𝐢𝐨𝐬 𝐭𝐞 𝐛𝐞𝐧𝐝𝐢𝐠𝐚\n┃ ⛥│🌱OF-KEV𝐈☘\n┃ ⛥╰───────────\n╰━━━━━━━━━━━──⊷'
       `
-      anita.sendMessage(anu.id,{image : fotito2, caption : kevin2})
+      anita.sendMessage(anu.id,{image : fotito2, caption : Despedida})
     }
 
  } catch(e) {
@@ -588,8 +579,6 @@ case 'hola':
 
 
 
-
-
   case 'menu' :
     case 'Menu' : 
     case 'Menú' :
@@ -608,6 +597,8 @@ case 'hola':
   
   -----------------
       ✨Menu✨
+
+ Dia: ${colom}\n\nHora: ${hora}
   ----------------- 
   ${prefix} menu
   ${prefix} fotoleg
