@@ -1,6 +1,6 @@
 # anita
 
-<a href="https://github.com/kevin-BOT-OFC"><img title="Author" src="https://img.shields.io/badge/Author-Kevin-Bots-red.svg?style=for-the-badge&logo=github"></a>
+<a href="https://github.com/kevin-BOT-OFC"><img title="Author" 
 <p align="center">
 
  <a href="http://wa.me/573001382233" target="blank"><img src="https://img.shields.io/badge/OFC-KEVIN_CREADOR-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" />
