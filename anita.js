@@ -81,6 +81,12 @@ const axios = require('axios');
 const speed = require("performance-now");
 const { getBuffer, getRandom, getExtension } = require('./archivos/lib/functions.js');
 const { fetchJson } = require("./archivos/lib/fetcher")
+
+const { TelegraPh } = require("./archivos/telegraPh.js")
+ const {
+ tmpdir
+} = require("os")
+
 // CONSTANTES SETTING //
 
 var prefix = '.' //prefijo
@@ -88,6 +94,8 @@ var NombreBot = 'anita Bot' // nombre del bot
 var Creador = "Juls Modders & clovers Mods" // No cambiar
 
 // BANNER //
+
+const {videoToWebp,imageToWebp,writeExifImg,writeExifVid} = require('./archivos/stickersss.js')
 
 const welkom = JSON.parse(fs.readFileSync('./archivos/welkom.json'))
 
@@ -151,9 +159,9 @@ anita.ev.on('group-participants.update', async (anu) => {
       const kevin = `
       ╭══════•>✾<•══════╮
 
-      ★¡Hola a todos!★
+          ★¡Hola a todos!★
       
-          ¡Bienvenidos! 
+            ¡Bienvenidos! 
       
       ╰══════•>✾<•══════╯
       
@@ -239,6 +247,61 @@ const messagesC = pes.slice(0).trim().split(/ +/).shift().toLowerCase()
 const botNumber = anita.user.id.split(':')[0]+'@s.whatsapp.net'
 const args = body.trim().split(/ +/).slice(1);
 const text = args.join(" ")
+
+
+//OJO SI NO DA BORRALA//
+
+const enviarfiguimg = async (jid, path, quoted, options = {}) => {
+  let buff = Buffer.isBuffer(path) ? path: /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64'): /^https?:\/\//.test(path) ? await (await getBuffer(path)): fs.existsSync(path) ? fs.readFileSync(path): Buffer.alloc(0)
+  let buffer
+  if (options && (options.packname || options.author)) {
+   buffer = await writeExifImg(buff, options)
+  } else {
+   buffer = await imageToWebp(buff)
+  }
+  
+  await anita.sendMessage(jid, {
+   sticker: {
+  url: buffer
+   }, ...options
+  }, {
+   quoted
+  })
+  return buffer
+   }
+   
+   const enviarfiguvid = async (jid, path, quoted, options = {}) => {
+  let buff = Buffer.isBuffer(path) ? path: /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64'): /^https?:\/\//.test(path) ? await (await getBuffer(path)): fs.existsSync(path) ? fs.readFileSync(path): Buffer.alloc(0)
+  let buffer
+  if (options && (options.packname || options.author)) {
+   buffer = await writeExifVid(buff, options)
+  } else {
+   buffer = await videoToWebp(buff)
+  }
+  
+  await anita.sendMessage(jid, {
+   sticker: {
+  url: buffer
+   }, ...options
+  }, {
+   quoted
+  })
+  return buffer
+   }
+   
+   const getFileBuffer1 = async (mediakey, MediaType) => { 
+  const stream = await downloadContentFromMessage(mediakey, MediaType)
+  
+  let buffer = Buffer.from([])
+  for await(const chunk of stream) {
+  buffer = Buffer.concat([buffer, chunk])
+  }
+  return buffer
+  }
+
+
+
+
 
 const isCmd = body.startsWith(prefix);
 const command = isCmd ? body.slice(1).trim().split(/ +/).shift().toLocaleLowerCase() : null 
@@ -419,11 +482,67 @@ case 'agregar' :
         enviar('1 para activar y 0 para desactivar')
       }
       break
+
+      case 'figu': case "figu2" : case "stickergif":  case "stickergif2":
+        if ((isMedia && !info.message.videoMessage || isQuotedImage)) {      
+       var stream = await downloadContentFromMessage(info.message.imageMessage || info.message.extendedTextMessage?.contextInfo.quotedMessage.imageMessage, 'image')
+           var buffer = Buffer.from([])
+           for await(const chunk of stream) {
+            buffer = Buffer.concat([buffer, chunk])
+           }
+           let ran = 'stickers.webp'
+           fs.writeFileSync(`./${ran}`, buffer)
+            ffmpeg(`./${ran}`)
+            .on("error", console.error)
+            .on("end", () => {
+             exec(`webpmux -set exif ./dados/${ran} -o ./${ran}`, async (error) => {
+             
+              await enviarfiguimg(from, fs.readFileSync(`./${ran}`), info, {
+        packname: '𝕄𝕀ℕ𝕀 𝕁𝕌𝕃𝕊ℂ𝕀𝕋𝕆', author: '𝕁𝕌𝕃𝕊 𝕄𝕆𝔻𝔻𝔼ℝ𝕊'
+       })
+               
+               fs.unlinkSync(`./${ran}`)
+                    
+              })
+             })
+          .addOutputOptions([
+              "-vcodec", 
+             "libwebp", 
+             "-vf", 
+         "scale=320:320:force_original_aspect_ratio=decrease,fps=15, pad=320:320:(ow-iw)/2:(oh-ih)/2:color=green@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse"
+           ])
+          .toFormat('webp')
+          .save(`${ran}`)	 
+           } else if ((isMedia && info.message.videoMessage.seconds < 11 || isQuotedVideo && info.message.extendedTextMessage.contextInfo.quotedMessage.videoMessage.seconds < 11)) {
+       const encmedia = isQuotedVideo ? info.message.extendedTextMessage.contextInfo.quotedMessage.videoMessage: info.message.videoMessage
+       rane = getRandom('.'+ await getExtension(encmedia.mimetype))
+       imgbuff = await getFileBuffer(encmedia, 'video')
+       fs.writeFileSync(rane, imgbuff)
+       const media = rane
+       ran = getRandom('.'+media.split('.')[1])
+       const upload = await TelegraPh(media)
+       await enviarfiguvid(from, util.format(upload), info, {
+        packname: '𝕄𝕀ℕ𝕀 𝕁𝕌𝕃𝕊ℂ𝕀𝕋𝕆', author: '𝕁𝕌𝕃𝕊 𝕄𝕆𝔻𝔻𝔼ℝ𝕊'
+       }) 
+       }
+                 break
+
+
+
+
+
 // ESCRIBIR AQUI COMANDOS CON PREFIJO
 
 case 'hola':
   enviartexto('Que tal en que andas✌😃')
   break
+
+  case 'Como estas':
+    case 'como estas':
+      case 'bot estas bien?':
+        case '¿bot estas bien?':
+          enviartexto('si muy bien y tu?')
+          break
 
   case 'foto':
     enviartexto('Lo siento el comando foto esta en Desarrollo')
